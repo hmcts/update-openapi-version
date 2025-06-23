@@ -1,0 +1,52 @@
+name: Update OpenAPI Version
+description: 'Custom action to dynamically update the version in OpenAPI spec
+ This action expects a single OpenAPI spec file within the specified path.'
+inputs:
+  openapi_path:
+    description: 'Path to OpenAPI spec folder. Only the first ''*.openapi.yml'' file found will be used.'
+    required: true
+  api_org:
+    description: 'Organization name to include in the server URL'
+    required: false
+    default: HMCTS-DTS
+  api_name:
+    description: 'API name to include in the server URL'
+    required: true
+  api_version:
+    description: 'Version to set in the spec'
+    required: true
+outputs:
+  openapi_file:
+    description: 'Path to updated OpenAPI spec'
+    value: ${{ steps.find_spec.outputs.openapi_file }}
+runs:
+  using: 'composite'
+  steps:
+    - name: Find OpenAPI file
+      id: find_spec
+      shell: bash
+      run: |
+        FILE=$(find "${{ inputs.openapi_path }}" -name "*.openapi.yml" | head -n 1)
+        if [ -z "$FILE" ]; then
+          echo "No OpenAPI file found"
+          exit 1
+        fi
+        echo "openapi_file=$FILE" >> $GITHUB_OUTPUT
+
+    - name: Update info.version in OpenAPI spec
+      uses: mikefarah/yq@v4.45.4
+      with:
+        cmd: |
+          yq '
+            .info.version = "${{ inputs.api_version }}" |
+            .servers[0].url = "https://virtserver.swaggerhub.com/${{ inputs.api_org }}/${{ inputs.api_name }}/${{ inputs.api_version }}"
+          ' "${{ steps.find_spec.outputs.openapi_file }}" > openapi-versioned.yml          
+
+    - name: Replace original OpenAPI file
+      run: mv openapi-versioned.yml "${{ steps.find_spec.outputs.openapi_file }}"
+
+    - name: Upload updated OpenAPI file
+      uses: actions/upload-artifact@v4
+      with:
+        name: openapi-spec-${{ inputs.api_version }}
+        path: ${{ steps.find_spec.outputs.openapi_file }}
