@@ -19,7 +19,7 @@ outputs:
   openapi_file:
     description: 'Path to updated OpenAPI spec'
     value: ${{ steps.find_spec.outputs.openapi_file }}
-  upload-artifact_name:
+  upload_artifact_name:
     description: 'Name of the uploaded artifact containing the updated OpenAPI spec'
     value: openapi-spec-${{ inputs.api_version }}
 runs:
