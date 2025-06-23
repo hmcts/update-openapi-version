@@ -43,7 +43,9 @@ runs:
           ' "${{ steps.find_spec.outputs.openapi_file }}" > openapi-versioned.yml          
 
     - name: Replace original OpenAPI file
-      run: mv openapi-versioned.yml "${{ steps.find_spec.outputs.openapi_file }}"
+      shell: bash
+      run: |
+        mv openapi-versioned.yml "${{ steps.find_spec.outputs.openapi_file }}"
 
     - name: Upload updated OpenAPI file
       uses: actions/upload-artifact@v4
