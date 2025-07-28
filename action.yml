@@ -37,7 +37,7 @@ runs:
         echo "openapi_file=$FILE" >> $GITHUB_OUTPUT
 
     - name: Update info.version in OpenAPI spec
-      uses: mikefarah/yq@v4.45.4
+      uses: mikefarah/yq@v4.47.1
       with:
         cmd: |
           yq '
