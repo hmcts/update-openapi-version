@@ -57,7 +57,7 @@ runs:
         name: openapi-spec-${{ inputs.api_version }}
         path: ${{ steps.find_spec.outputs.openapi_file }}
 
-    - uses: actions/attest-build-provenance@v2
+    - uses: actions/attest-build-provenance@v3
       with:
         subject-name: openapi-spec-${{ inputs.api_version }}
         subject-digest: sha256:${{ steps.upload.outputs.artifact-digest }}
