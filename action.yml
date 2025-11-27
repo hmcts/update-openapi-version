@@ -29,7 +29,7 @@ runs:
       id: find_spec
       shell: bash
       run: |
-        FILE=$(find "${{ inputs.openapi_path }}" -name "*.openapi.yml" | head -n 1)
+        FILE=$(find "${{ inputs.openapi_path }}" -name "*openapi*.yml" | head -n 1)
         if [ -z "$FILE" ]; then
           echo "No OpenAPI file found"
           exit 1

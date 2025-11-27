@@ -2,7 +2,7 @@
 
 A custom GitHub Action that updates the version and server URL in an OpenAPI specification file.
 
-This action locates the first *.openapi.yml file in the given path, updates its info.version field, and rewrites the first servers[0].url using a standard SwaggerHub format. 
+This action locates the first *openapi*.yml file in the given path, updates its info.version field, and rewrites the first servers[0].url using a standard SwaggerHub format. 
 It is designed for CI pipelines that require versioned OpenAPI definitions as part of their build or release process.
 
 ## Example Usage
