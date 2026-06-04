@@ -6,7 +6,7 @@ inputs:
     description: 'Path to OpenAPI spec folder. Only the first ''*.openapi.yml'' file found will be used.'
     required: true
   api_org:
-    description: 'Organization name to include in the server URL'
+    description: 'Deprecated: no longer used. Server URLs follow https://<api_name>.net.'
     required: false
     default: HMCTS-DTS
   api_name:
@@ -42,8 +42,10 @@ runs:
         cmd: |
           yq '
             .info.version = "${{ inputs.api_version }}" |
-            .servers[0].url = "https://virtserver.swaggerhub.com/${{ inputs.api_org }}/${{ inputs.api_name }}/${{ inputs.api_version }}"
-          ' "${{ steps.find_spec.outputs.openapi_file }}" > openapi-versioned.yml          
+            .servers[0].url = "https://${{ inputs.api_name }}.net/{version}" |
+            .servers[0].variables.version.default = "${{ inputs.api_version }}" |
+            .servers[0].variables.version.description = "API version; matches the spec info.version"
+          ' "${{ steps.find_spec.outputs.openapi_file }}" > openapi-versioned.yml
 
     - name: Replace original OpenAPI file
       shell: bash
